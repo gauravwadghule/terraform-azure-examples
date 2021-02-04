@@ -1,18 +1,9 @@
 
-  provider "azurerm" {
-  features {}
-}
-
-resource "azurerm_resource_group" "rg" {
-  name     = "in1-aks"
-  location = "centralindia"
-}
-
 module "aks" {
     source = "../../../modules/aks"
     name = "in1-aks-centralindia"
     location = "centralindia"
-    resource_group_name = azurerm_resource_group.rg.name
+    resource_group_name = var.rg_name
     dns_prefix = "in1-aks-centralindia"
     appId = var.appId
     password = var.password
