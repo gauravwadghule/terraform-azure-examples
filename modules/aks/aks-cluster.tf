@@ -41,3 +41,23 @@ resource "azurerm_kubernetes_cluster" "default" {
     }
   }
 }
+
+provider "helm" {
+  version = "~> 1.0"
+  kubernetes {
+    host = azurerm_kubernetes_cluster.default.kube_config[0].host
+
+    client_key             = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].client_key)
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].client_certificate)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].cluster_ca_certificate)
+  
+  }
+}
+
+
+resource "helm_release" "nginix_ingress" {
+    name      = "nginix_ingress"
+    repository = "https://kubernetes-charts.storage.googleapis.com"
+    chart     = "nginx-ingress"
+    namespace = "default"
+}
