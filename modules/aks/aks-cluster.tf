@@ -42,22 +42,56 @@ resource "azurerm_kubernetes_cluster" "default" {
   }
 }
 
-provider "helm" {
-  version = "~> 1.0"
-  kubernetes {
-    host = azurerm_kubernetes_cluster.default.kube_config[0].host
+resource "null_resource" "get_context" {
+    provisioner "local-exec" {
+        command = "az aks get-credentials --resource-group ${azurerm_kubernetes_cluster.default.resource_group_name} --name ${azurerm_kubernetes_cluster.default.name} --overwrite-existing"
+    } 
 
-    client_key             = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].client_key)
-    client_certificate     = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].client_certificate)
-    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].cluster_ca_certificate)
+    depends_on = [azurerm_kubernetes_cluster.default]
+}
+
+resource "null_resource" "install_nginx_ingress_controller" {
+    provisioner "local-exec" {
+        command = "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/cloud/deploy.yaml"
+    } 
+
+    depends_on = [null_resource.get_context]
+}
+
+// provider "kubernetes" {
+//   host = azurerm_kubernetes_cluster.default.kube_config.0.host
+
+//   username = azurerm_kubernetes_cluster.default.kube_config.0.username
+//   password = azurerm_kubernetes_cluster.default.kube_config.0.password
+// }
+
+
+// provider "helm" {
+//   debug = true
+//   kubernetes {
+//     host = azurerm_kubernetes_cluster.default.kube_config[0].host
+
+//     client_key             = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].client_key)
+//     client_certificate     = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].client_certificate)
+//     cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.default.kube_config[0].cluster_ca_certificate)
   
-  }
-}
+//   }
+// }
 
 
-resource "helm_release" "nginix_ingress" {
-    name      = "nginix_ingress"
-    repository = "https://kubernetes-charts.storage.googleapis.com"
-    chart     = "nginx-ingress"
-    namespace = "default"
-}
+// resource "helm_release" "nginix_ingress" {
+//     name      = "nginix_ingress"
+//     repository = "https://kubernetes-charts.storage.googleapis.com"
+//     chart     = "nginx-ingress"
+//     namespace = "default"
+// }
+
+// resource helm_release nginx_ingress {
+//   name       = "nginx-ingress-controller"
+
+//   repository = "https://charts.bitnami.com/bitnami"
+//   chart      = "nginx-ingress-controller"
+//   verify     = false
+//   namespace  = "kube-system"
+  
+// }

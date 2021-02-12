@@ -14,6 +14,12 @@ variable "aks_name" {
 variable "aks_location" {
     description = "AKS location"
 }
+variable "aks_name_eastus2" {
+    description = "AKS name"
+}
+variable "aks_location_eastus2" {
+    description = "AKS location"
+}
 
 variable "storage_account_name" {
     description = "AKS location"
