@@ -33,21 +33,6 @@ variable "password" {
   description = "Azure Kubernetes Service Cluster password"
 }
 
-// variable "backend_storage_account_name" {
-//   description = "Backend storage account name"
-// }
-
-// variable "backend_container_name" {
-//   description = "Backend storage container name"
-// }
-
-// variable "backend_file_name" {
-//   description = "Backend state file name"
-// }
-
-// variable "backend_storage_access_key" {
-//   description = "Backend storage access key"
-// }
 
 
 

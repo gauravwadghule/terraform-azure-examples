@@ -8,10 +8,10 @@ terraform {
   required_version = ">= 0.13"
 
     backend "azurerm" {
-    storage_account_name = "abxterraform"
-    container_name       = "terraformstate"
-    key                  = "in1.tfstate"
-    access_key           = "iQz2E74NPAfNjCfYC7AQW3Gwy9X8ZnjfAtAuVrrvz04deLTVLNvhjlu9ZJKhGKj7kJeIdDD4RHzvKDw5REXX6w=="
+    storage_account_name = "yourstorage"
+    container_name       = "containername"
+    key                  = "statefilename"
+    access_key           = "accesskeyforstorage"
   }
 }
 
